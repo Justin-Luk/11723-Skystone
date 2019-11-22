@@ -46,6 +46,23 @@ public class testst extends OpMode {
         RB.setPower(-(gamepad1.right_stick_y));
         LF.setPower(-(gamepad1.left_stick_y));
         LB.setPower(-(gamepad1.left_stick_y));
+
+        while (gamepad1.right_stick_x > 0) {
+            RF.setPower(1);
+            LB.setPower(1);
+        }
+        while (gamepad1.right_stick_x < 0) {
+            RF.setPower(-1);
+            LB.setPower(-1);
+        }
+        while (gamepad1.left_stick_x < 0) {
+            LF.setPower(1);
+            RB.setPower(1);
+        }
+        while (gamepad1.left_stick_x > 0) {
+            LF.setPower(1);
+            RB.setPower(1);
+        }
      //   Arm.setPower(gamepad2.left_stick_y);
 
 
