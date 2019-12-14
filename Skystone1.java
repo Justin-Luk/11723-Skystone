@@ -243,6 +243,19 @@ public class Skystone1 extends LinearOpMode {
                 LB.setPower(plb);
                 RF.setPower(prf);
                 RB.setPower(prb);
+                while (gamepad1.right_trigger > 0)    {
+                    LF.setPower(-1);
+                    LB.setPower(1);
+                    RF.setPower(-1);
+                    RB.setPower(1);
+                }
+
+                while (gamepad1.left_trigger > 0)       {
+                    LF.setPower(1);
+                    LB.setPower(-1);
+                    RF.setPower(1);
+                    RB.setPower(-1);
+                }
 
                 if (gamepad1.a){
                     Mode --;
@@ -304,6 +317,19 @@ public class Skystone1 extends LinearOpMode {
                     RB.setPower(prb);
 //                    p3 /= max;
 //                    p4 /= max;
+                }
+                while (gamepad1.right_trigger > 0)    {
+                    LF.setPower(-1);
+                    LB.setPower(1);
+                    RF.setPower(-1);
+                    RB.setPower(1);
+                }
+
+                while (gamepad1.left_trigger > 0)       {
+                    LF.setPower(1);
+                    LB.setPower(-1);
+                    RF.setPower(1);
+                    RB.setPower(-1);
                 }
                 if (gamepad1.a){
                     Mode --;
