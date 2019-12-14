@@ -1,6 +1,5 @@
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,7 +21,7 @@ public class Skystone1 extends LinearOpMode {
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
     double                  globalAngle, pl = .5,pr = .5, correction;
-    boolean                 aButton, bButton, touched;
+
     @Override
     public void runOpMode() throws InterruptedException {
         RF = hardwareMap.dcMotor.get("RF"); //gets RFM on hardware map
@@ -206,7 +205,7 @@ public class Skystone1 extends LinearOpMode {
                     Mode --;
                 }
                 if (gamepad1.b) {
-
+                    Mode ++;
                 }
             }
             if (Mode == 2) {
@@ -245,10 +244,12 @@ public class Skystone1 extends LinearOpMode {
                 RF.setPower(prf);
                 RB.setPower(prb);
 
-
-
-
-
+                if (gamepad1.a){
+                    Mode --;
+                }
+                if (gamepad1.b) {
+                    Mode ++;
+                }
             }
             if (Mode == 3) {
                 telemetry.addLine("Exponential Drive");
@@ -304,13 +305,12 @@ public class Skystone1 extends LinearOpMode {
 //                    p3 /= max;
 //                    p4 /= max;
                 }
-
-
-
-
-
-
-
+                if (gamepad1.a){
+                    Mode --;
+                }
+                if (gamepad1.b) {
+                    Mode ++;
+                }
 
             }
 
