@@ -1,5 +1,6 @@
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,11 +14,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 Justin Luk 11723 Canton Gearhounds
 Our first actually decent TeleOp this year
  */
-
+@TeleOp
 public class Skystone1 extends LinearOpMode {
     private DcMotor RF,RB,LF,LB,FI,Cranemotor;
-    private Servo Arm = null;
     private CRServo Crane1 = null;
+    private CRServo Arm2 = null;
+
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
     double                  globalAngle, pl = .5,pr = .5, correction;
@@ -29,10 +31,13 @@ public class Skystone1 extends LinearOpMode {
         LF = hardwareMap.dcMotor.get("LF"); //gets LFM on hardware map
         LB = hardwareMap.dcMotor.get("LB"); //gets LBM on hardware map
         FI = hardwareMap.dcMotor.get("FI"); //gets Front Intake on hardware map
+        Cranemotor = hardwareMap.dcMotor.get("LIFT");
+        Arm2 = hardwareMap.crservo.get("ARM2");
+        Crane1  = hardwareMap.crservo.get("BOOM");
         int Mode =0;
-        Cranemotor = hardwareMap.dcMotor.get("Cranemotor");
-        Arm = hardwareMap.servo.get("ARM");
-        Crane1  = hardwareMap.crservo.get("Crane1");
+       // Cranemotor = hardwareMap.dcMotor.get("Cranemotor");
+     //   Arm = hardwareMap.servo.get("ARM");
+      //  Crane1  = hardwareMap.crservo.get("Crane1");
 
 
         RB.setDirection(DcMotor.Direction.REVERSE); //sets both left side motors on reverse
@@ -67,6 +72,281 @@ public class Skystone1 extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+
+            if(gamepad1.a) {
+                Mode--;
+            } else if (gamepad1.b) {
+                Mode++;
+            }
+
+            if(Mode < 0) {
+                Mode = 0;
+            } else if(Mode > 3) {
+                Mode = 3;
+            }
+
+            switch(Mode) {
+                case 0:
+                    telemetry.addLine("Arcade Drive");
+                    double px = gamepad1.left_stick_x;
+                    if (Math.abs(px) < 0.05) px = 0;
+                    double py = -gamepad1.left_stick_y;
+                    if (Math.abs(py) < 0.05) py = 0;
+                    double pa = -gamepad1.right_stick_x;
+                    if (Math.abs(pa) < 0.05) pa = 0;
+                    double plf = -px + py - pa;
+                    double plb = px + py + -pa;
+                    double prf = -px + py + pa;
+                    double prb = px + py + pa;
+                    double max = Math.max(1.0, Math.abs(plf));
+                    max = Math.max(max, Math.abs(plb));
+                    max = Math.max(max, Math.abs(prf));
+                    max = Math.max(max, Math.abs(prb));
+                    plf /= max;
+                    plb /= max;
+                    prf /= max;
+                    prb /= max;
+                    LF.setPower(plf);
+                    LB.setPower(plb);
+                    RF.setPower(prf);
+                    RB.setPower(prb);
+
+                    Arm2.setPower(gamepad2.right_stick_y);
+                    Crane1.setPower(gamepad2.left_stick_y);
+
+                    while (gamepad2.right_trigger > 0) {
+                        Cranemotor.setPower(0.5);
+                    }
+                    while (gamepad2.left_trigger > 0) {
+                        Cranemotor.setPower(-0.5);
+                    }
+                    if (gamepad2.right_bumper){
+                        Crane1.setPower(0.5);
+                    }
+                    if (gamepad2.left_bumper) {
+                        Crane1.setPower(-0.5);
+                    }
+                    while (gamepad1.left_stick_x < 0)    {
+                        LF.setPower(-1);
+                        LB.setPower(1);
+                        RF.setPower(-1);
+                        RB.setPower(1);
+                    }
+
+                    while (gamepad1.left_stick_x > 0)       {
+                        LF.setPower(1);
+                        LB.setPower(-1);
+                        RF.setPower(1);
+                        RB.setPower(-1);
+                    }
+
+                    while (gamepad1.right_bumper)    {
+                        LF.setPower(-0.5);
+                        LB.setPower(0.5);
+                        RF.setPower(-0.5);
+                        RB.setPower(0.5);
+                    }
+
+                    while (gamepad1.left_bumper)       {
+                        LF.setPower(0.5);
+                        LB.setPower(-0.5);
+                        RF.setPower(0.5);
+                        RB.setPower(-0.5);
+                    }
+                case 1:
+                    telemetry.addLine("Tank Drive");
+                    double pr = gamepad1.right_stick_y;
+                    if (Math.abs(pr) < 0.05) pr = 0;
+                    double pl = gamepad1.left_stick_y;
+                    if (Math.abs(pl) < 0.05) pl = 0;
+                    plf = pl;
+                    plb = pl;
+                    prf = pr;
+                    prb = pr;
+                    max = Math.max(1.0, Math.abs(plf));
+                    max = Math.max(max, Math.abs(plb));
+                    max = Math.max(max, Math.abs(prf));
+                    max = Math.max(max, Math.abs(prb));
+                    plf /= max;
+                    plb /= max;
+                    prf /= max;
+                    prb /= max;
+
+                    LF.setPower(plf);
+                    LB.setPower(plb);
+                    RF.setPower(prf);
+                    RB.setPower(prb);
+
+                    Arm2.setPower(gamepad2.right_stick_y);
+                    Crane1.setPower(gamepad2.left_stick_y);
+
+                    while (gamepad2.right_trigger > 0) {
+                        Cranemotor.setPower(0.5);
+                    }
+                    while (gamepad2.left_trigger > 0) {
+                        Cranemotor.setPower(-0.5);
+                    }
+                    if (gamepad2.right_bumper){
+                        Crane1.setPower(0.5);
+                    }
+                    if (gamepad2.left_bumper) {
+                        Crane1.setPower(-0.5);
+                    }
+                    while (gamepad1.right_trigger > 0)    {
+                        LF.setPower(-1);
+                        LB.setPower(1);
+                        RF.setPower(-1);
+                        RB.setPower(1);
+                    }
+
+                    while (gamepad1.left_trigger > 0)       {
+                        LF.setPower(1);
+                        LB.setPower(-1);
+                        RF.setPower(1);
+                        RB.setPower(-1);
+                    }
+
+                    while (gamepad1.right_bumper)    {
+                        LF.setPower(-0.5);
+                        LB.setPower(0.5);
+                        RF.setPower(-0.5);
+                        RB.setPower(0.5);
+                    }
+
+                    while (gamepad1.left_bumper)       {
+                        LF.setPower(0.5);
+                        LB.setPower(-0.5);
+                        RF.setPower(0.5);
+                        RB.setPower(-0.5);
+                    }
+                case 2:
+                    telemetry.addLine("Field Centric Drive");
+                    correction = checkDirection();
+
+                    telemetry.addData("1 imu heading", lastAngles.firstAngle);
+                    telemetry.addData("2 global heading", globalAngle);
+                    telemetry.addData("3 correction", correction);
+                    telemetry.update();
+
+                    pr = gamepad1.right_stick_y;
+                    if (Math.abs(pr) < 0.05) pr = 0;
+                    pl = gamepad1.left_stick_y;
+                    if (Math.abs(pl) < 0.05) pl = 0;
+                    plf = pl;
+                    plb = pl;
+                    prf = pr;
+                    prb = pr;
+
+                    LF.setPower(pl - correction);
+                    RF.setPower(pr + correction);
+                    LB.setPower(pl - correction);
+                    RB.setPower(pr + correction);
+
+
+                    max = Math.max(1.0, Math.abs(plf));
+                    max = Math.max(max, Math.abs(plb));
+                    max = Math.max(max, Math.abs(prf));
+                    max = Math.max(max, Math.abs(prb));
+                    plf /= max;
+                    plb /= max;
+                    prf /= max;
+                    prb /= max;
+
+                    LF.setPower(plf);
+                    LB.setPower(plb);
+                    RF.setPower(prf);
+                    RB.setPower(prb);
+
+                    Arm2.setPower(gamepad2.right_stick_y);
+                    Crane1.setPower(gamepad2.left_stick_y);
+
+                    while (gamepad1.right_trigger > 0)    {
+                        LF.setPower(-1);
+                        LB.setPower(1);
+                        RF.setPower(-1);
+                        RB.setPower(1);
+                    }
+
+                    while (gamepad1.left_trigger > 0)       {
+                        LF.setPower(1);
+                        LB.setPower(-1);
+                        RF.setPower(1);
+                        RB.setPower(-1);
+                    }
+                case 3:
+                    telemetry.addLine("Exponential Drive");
+                    while (gamepad1.left_stick_y > 0.05) {
+                        pl = Math.abs(gamepad1.left_stick_y);
+                        if (Math.abs(pl) < 0.05) pl = 0;
+                        plf = Math.pow(pl,1.4);
+                        plb = Math.pow(pl,1.4);
+                        max = Math.max(1.0, Math.abs(plf));
+                        max = Math.max(max, Math.abs(plb));
+                        plf /= max;
+                        plb /= max;
+
+                        LF.setPower(plf);
+                        LB.setPower(plb);
+                    }
+                    while (gamepad1.left_stick_y < -0.05) {
+                        pl = Math.abs(gamepad1.left_stick_y);
+                        if (Math.abs(pl) < 0.05) pl = 0;
+                        plf = -1*Math.pow(pl,1.4);
+                        plb = -1*Math.pow(pl,1.4);
+                        max = Math.max(1.0, Math.abs(plf));
+                        max = Math.max(max, Math.abs(plb));
+                        plf /= max;
+                        plb /= max;
+
+                        LF.setPower(plf);
+                        LB.setPower(plb);
+                    }
+                    while (gamepad1.right_stick_y > 0.05){
+                        pr = Math.abs(gamepad1.right_stick_y);
+                        if (Math.abs(pr) < 0.05) pr = 0;
+
+                        prf = Math.pow(pr,1.4);
+                        prb = Math.pow(pr,1.4);
+//                    max = Math.max(max, Math.abs(p3));
+//                    max = Math.max(max, Math.abs(p4));
+                        RF.setPower(prf);
+                        RB.setPower(prb);
+//                    p3 /= max;
+//                    p4 /= max;
+                    }
+                    while (gamepad1.right_stick_y < -0.05){
+                        pr = Math.abs(gamepad1.right_stick_y);
+                        if (Math.abs(pr) < 0.05) pr = 0;
+
+                        prf = -1*Math.pow(pr,1.4);
+                        prb = -1*Math.pow(pr,1.4);
+//                    max = Math.max(max, Math.abs(p3));
+//                    max = Math.max(max, Math.abs(p4));
+                        RF.setPower(prf);
+                        RB.setPower(prb);
+//                    p3 /= max;
+//                    p4 /= max;
+                    }
+
+                    Arm2.setPower(gamepad2.right_stick_y);
+                    Crane1.setPower(gamepad2.left_stick_y);
+
+                    while (gamepad1.right_trigger > 0)    {
+                        LF.setPower(-1);
+                        LB.setPower(1);
+                        RF.setPower(-1);
+                        RB.setPower(1);
+                    }
+
+                    while (gamepad1.left_trigger > 0)       {
+                        LF.setPower(1);
+                        LB.setPower(-1);
+                        RF.setPower(1);
+                        RB.setPower(-1);
+                    }
+            }
+
+            /*
             if (Mode == 0) {
                 telemetry.addLine("Arcade Drive");
                 double px = gamepad1.left_stick_x;
@@ -131,12 +411,16 @@ public class Skystone1 extends LinearOpMode {
                     RF.setPower(0.5);
                     RB.setPower(-0.5);
                 }
+
                 if (gamepad1.a) {
                     Mode ++;
                 }
 
             }
 
+             */
+
+            /*
             if (Mode == 1) {
                 telemetry.addLine("Tank Drive");
                 double pr = gamepad1.right_stick_y;
@@ -208,6 +492,9 @@ public class Skystone1 extends LinearOpMode {
                     Mode ++;
                 }
             }
+
+             */
+            /*
             if (Mode == 2) {
                 telemetry.addLine("Field Centric Drive");
                 correction = checkDirection();
@@ -264,7 +551,9 @@ public class Skystone1 extends LinearOpMode {
                     Mode ++;
                 }
             }
-            if (Mode == 3) {
+
+             */
+           /* if (Mode == 3) {
                 telemetry.addLine("Exponential Drive");
                 while (gamepad1.left_stick_y > 0.05) {
                     double pl = Math.abs(gamepad1.left_stick_y);
@@ -337,9 +626,8 @@ public class Skystone1 extends LinearOpMode {
                 if (gamepad1.b) {
                     Mode ++;
                 }
-
-            }
-
+}
+         */
         }
 
     }
