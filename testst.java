@@ -1,3 +1,5 @@
+import android.graphics.PorterDuff;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -24,9 +26,13 @@ public class testst extends OpMode {
         Cranemotor = hardwareMap.dcMotor.get("LIFT");
         Arm2 = hardwareMap.crservo.get("ARM2");
         Crane1  = hardwareMap.crservo.get("BOOM");
+        FI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Cranemotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        RB.setDirection(DcMotor.Direction.FORWARD); //sets both left side motors on reverse
+
+
+        RB.setDirection(DcMotor.Direction.REVERSE); //sets both left side motors on reverse
         LF.setDirection(DcMotor.Direction.FORWARD);
         LB.setDirection(DcMotor.Direction.FORWARD);
 
@@ -87,10 +93,10 @@ public class testst extends OpMode {
         plb /= max;
         prf /= max;
         prb /= max;
-        LF.setPower(plf);
-        LB.setPower(plb);
-        RF.setPower(prf);
-        RB.setPower(prb);
+        LF.setPower(plf*(.80));
+        LB.setPower(plb*(.80));
+        RF.setPower(prf*(.80));
+        RB.setPower(prb*(.80));
 //        RF.setPower(-(gamepad1.right_stick_y)); //establishes basic tank drive controls
 //        RB.setPower(-(gamepad1.right_stick_y));
 //        LF.setPower(-(gamepad1.left_stick_y));
@@ -109,11 +115,17 @@ public class testst extends OpMode {
         if (gamepad2.right_stick_button) {
             Cranemotor.setPower(0);
         }
-       while (gamepad2.left_trigger > 0) {
+       if (gamepad2.left_trigger > 0) {
             Cranemotor.setPower(-0.5);
        }
-        while (gamepad2.right_trigger > 0) {
+       else {
+           Cranemotor.setPower(0);
+       }
+        if (gamepad2.right_trigger > 0) {
             Cranemotor.setPower(0.5);
+        }
+        else {
+            Cranemotor.setPower(0);
         }
 //        if (gamepad2.y) {
 //            Cranemotor.setPower(0);
@@ -131,29 +143,29 @@ public class testst extends OpMode {
         while (gamepad1.right_trigger > 0)    {
             LF.setPower(-1);
             LB.setPower(1);
-            RF.setPower(-1);
-            RB.setPower(1);
+            RF.setPower(1);
+            RB.setPower(-1);
         }
 
         while (gamepad1.left_trigger > 0)       {
             LF.setPower(1);
             LB.setPower(-1);
-            RF.setPower(1);
-            RB.setPower(-1);
+            RF.setPower(-1);
+            RB.setPower(1);
         }
 
         while (gamepad1.right_bumper)    {
             LF.setPower(-0.5);
             LB.setPower(0.5);
-            RF.setPower(-0.5);
-            RB.setPower(0.5);
+            RF.setPower(0.5);
+            RB.setPower(-0.5);
         }
 
         while (gamepad1.left_bumper)       {
             LF.setPower(0.5);
             LB.setPower(-0.5);
-            RF.setPower(0.5);
-            RB.setPower(-0.5);
+            RF.setPower(-0.5);
+            RB.setPower(0.5);
         }
 
         if (gamepad1.x)       {
@@ -183,7 +195,7 @@ public class testst extends OpMode {
             FI.setPower(.5);
             elapsedTime.reset();
 
-            while (elapsedTime.seconds() < .5){
+            while (elapsedTime.seconds() < 2){
 
             }
             FI.setPower(0);
@@ -194,10 +206,24 @@ public class testst extends OpMode {
             FI.setPower(-.5);
             elapsedTime.reset();
 
-            while (elapsedTime.seconds() < .5){
+            while (elapsedTime.seconds() < 1.5){
 
             }
             FI.setPower(0);
+        }
+
+        if (gamepad2.x) {
+
+            {
+                ElapsedTime elapsedTime = new ElapsedTime();
+                Crane1.setPower(-1);
+                FI.setPower(-.5);
+                elapsedTime.reset();
+
+                while (elapsedTime.seconds() < 2) {
+
+                }
+            }
         }
 
 }}

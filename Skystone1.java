@@ -41,6 +41,9 @@ public class Skystone1 extends LinearOpMode {
 
 
         RB.setDirection(DcMotor.Direction.REVERSE); //sets both left side motors on reverse
+        LF.setDirection(DcMotor.Direction.FORWARD);
+        LB.setDirection(DcMotor.Direction.FORWARD);
+
         RF.setDirection(DcMotor.Direction.REVERSE);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -113,6 +116,11 @@ public class Skystone1 extends LinearOpMode {
 
                     Arm2.setPower(gamepad2.right_stick_y);
                     Crane1.setPower(gamepad2.left_stick_y);
+
+                    if (gamepad2.right_stick_button) {
+                        Cranemotor.setPower(0);
+                    }
+
 
                     while (gamepad2.right_trigger > 0) {
                         Cranemotor.setPower(0.5);
@@ -220,7 +228,7 @@ public class Skystone1 extends LinearOpMode {
                         RB.setPower(-0.5);
                     }
                 case 2:
-                    telemetry.addLine("Field Centric Drive");
+                /*    telemetry.addLine("Self Correcting");
                     correction = checkDirection();
 
                     telemetry.addData("1 imu heading", lastAngles.firstAngle);
@@ -273,6 +281,8 @@ public class Skystone1 extends LinearOpMode {
                         RF.setPower(1);
                         RB.setPower(-1);
                     }
+                    */
+
                 case 3:
                     telemetry.addLine("Exponential Drive");
                     while (gamepad1.left_stick_y > 0.05) {
