@@ -248,6 +248,29 @@ public class awoie extends LinearOpMode {
                 Crane1.setPower(-1);
                 sleep(1000);
 
+                LF.setPower(-.4);
+                LB.setPower(-.4);
+                RF.setPower(-.4);
+                RB.setPower(-.4);
+                sleep(750);
+
+                LF.setPower(-0.5);
+                LB.setPower(0.5);
+                RF.setPower(0.5);
+                RB.setPower(-0.5);
+                sleep(5000);
+
+                FI.setPower(.5);
+                sleep(750);
+                FI.setPower(0);
+
+                LF.setPower(0.5);
+                LB.setPower(-0.5);
+                RF.setPower(-0.5);
+                RB.setPower(0.5);
+                sleep(2500);
+
+
                 LF.setPower(0);
                 LB.setPower(0);
                 RF.setPower(0);
@@ -289,6 +312,28 @@ public class awoie extends LinearOpMode {
                 FI.setPower(0);
                 Crane1.setPower(-1);
                 sleep(1000);
+
+                LF.setPower(-.4);
+                LB.setPower(-.4);
+                RF.setPower(-.4);
+                RB.setPower(-.4);
+                sleep(750);
+
+                LF.setPower(-0.5);
+                LB.setPower(0.5);
+                RF.setPower(0.5);
+                RB.setPower(-0.5);
+                sleep(5000);
+
+                FI.setPower(.5);
+                sleep(750);
+                FI.setPower(0);
+
+                LF.setPower(0.5);
+                LB.setPower(-0.5);
+                RF.setPower(-0.5);
+                RB.setPower(0.5);
+                sleep(2500);
 
                 LF.setPower(0);
                 LB.setPower(0);
@@ -334,6 +379,28 @@ public class awoie extends LinearOpMode {
                 FI.setPower(0);
                 Crane1.setPower(-1);
                 sleep(1000);
+
+                LF.setPower(-.4);
+                LB.setPower(-.4);
+                RF.setPower(-.4);
+                RB.setPower(-.4);
+                sleep(750);
+
+                LF.setPower(-0.5);
+                LB.setPower(0.5);
+                RF.setPower(0.5);
+                RB.setPower(-0.5);
+                sleep(5000);
+
+                FI.setPower(.5);
+                sleep(750);
+                FI.setPower(0);
+
+                LF.setPower(0.5);
+                LB.setPower(-0.5);
+                RF.setPower(-0.5);
+                RB.setPower(0.5);
+                sleep(2500);
 
                 FI.setPower(0);
                 LF.setPower(0);
