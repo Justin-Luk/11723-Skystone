@@ -1,3 +1,4 @@
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -6,17 +7,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 @TeleOp
 public class testst extends OpMode {
     private DcMotor RF,RB,LF,LB,FI,Cranemotor;
     private CRServo Crane1 = null;
+    private Servo Arm2;
+   // private Servo CapServo;
     int pulse = 1680;
 
 
@@ -30,8 +30,9 @@ public class testst extends OpMode {
         LB = hardwareMap.dcMotor.get("LB"); //gets LBM on hardware map
         FI = hardwareMap.dcMotor.get("FI"); //gets Front Intake on hardware map
         Cranemotor = hardwareMap.dcMotor.get("LIFT");
-       // Arm2 = hardwareMap.crservo.get("ARM2");
+        Arm2 = hardwareMap.servo.get("ARM2");
         Crane1  = hardwareMap.crservo.get("BOOM");
+     //   CapServo = hardwareMap.servo.get("Cap");
         FI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Cranemotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -101,15 +102,25 @@ public class testst extends OpMode {
         plb /= max;
         prf /= max;
         prb /= max;
-        LF.setPower(plf*(.9));
-        LB.setPower(plb*(.9));
-        RF.setPower(prf*(.9));
-        RB.setPower(prb*(.9));
+        LF.setPower(plf);
+        LB.setPower(plb);
+        RF.setPower(prf);
+        RB.setPower(prb);
 //        RF.setPower(-(gamepad1.right_stick_y)); //establishes basic tank drive controls
 //        RB.setPower(-(gamepad1.right_stick_y));
 //        LF.setPower(-(gamepad1.left_stick_y));
 //        LB.setPower(-(gamepad1.left_stick_y));
-        //Arm2.setPower(gamepad2.right_stick_y);
+    //    Arm2.setPower(gamepad2.right_stick_y);
+
+//        if(gamepad2.dpad_up) {
+//            Arm2.set;
+//        }
+        if  (gamepad2.dpad_right){
+            Arm2.setPosition(0);
+        }
+        if (gamepad2.dpad_left){
+            Arm2.setPosition(1);
+        }
         Crane1.setPower(gamepad2.left_stick_y);
 
         Cranemotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -123,30 +134,19 @@ public class testst extends OpMode {
         if (gamepad2.right_stick_button) {
             Cranemotor.setPower(0);
         }
-       if (gamepad2.left_trigger > 0) {
-            Cranemotor.setPower(-1);
-       }
-       else {
-           Cranemotor.setPower(0);
-       }
-        if (gamepad2.right_trigger > 0) {
-            Cranemotor.setPower(1);
-        }
-        else {
-            Cranemotor.setPower(0);
-        }
+       
 //        if (gamepad2.y) {
 //            Cranemotor.setPower(0);
 //        }
-        if (gamepad2.right_bumper){
-            Crane1.setPower(0.5);
-        }
-        if (gamepad2.left_bumper) {
-            Crane1.setPower(-0.5);
-        }
 
-     //   Arm.setPower(gamepad2.left_stick_y);
 
+//        if (gamepad2.right_bumper){
+//            CapServo.setPosition(.5);
+//        }
+
+//        if (gamepad2.left_bumper) {
+//            CapServo.setPosition(.8);
+//        }
 
         while (gamepad1.right_trigger > 0)    {
             LF.setPower(.9);
@@ -209,6 +209,17 @@ public class testst extends OpMode {
             FI.setPower(0);
         }
 
+        if (gamepad2.right_trigger > .3) {
+            Cranemotor.setPower(1);
+        } else {
+            Cranemotor.setPower(0);
+        }
+        if (gamepad2.left_trigger > .3) {
+            Cranemotor.setPower(-1);
+        } else {
+            Cranemotor.setPower(0);
+        }
+
         if (gamepad2.a) {
             ElapsedTime elapsedTime = new ElapsedTime();
             FI.setPower(-.5);
@@ -234,4 +245,4 @@ public class testst extends OpMode {
             }
         }
 
-}}
+    }}
