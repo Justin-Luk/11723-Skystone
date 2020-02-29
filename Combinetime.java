@@ -37,9 +37,9 @@ public class Combinetime extends LinearOpMode {
     BNO055IMU imu;
     private Orientation angles;
 
-    double kP = 0.01;
-    double kD = 0.0123;
-    double kI = 0.001;
+    double kP = 0.005;
+    double kD = 0.01;
+    double kI = 0.00008;
 
     double totalError = 0;
     double lastAngle = 0;
@@ -134,12 +134,12 @@ public class Combinetime extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            encoderDrive(-0.5, 60, 60, false);      //put the foundation in the zone
-            stop();                             //back up
+            encoderDrive(0.5, -60, 60, false);      //put the foundation in the zone
             Arm2.setPosition(.8);
-            encoderDrive(1, 12, 60, false);
+            encoderDrive(0.5, 12, 60, false);
             gyroTurn(90);
             Arm2.setPosition(0);
+            stop();
 
             targetsSkyStone.activate();     //time to start scanning!
             while (!isStopRequested()) {
@@ -216,6 +216,8 @@ public class Combinetime extends LinearOpMode {
 
         telemetry.addLine("Encoder Drive");
 
+        double currentAngle = angles.firstAngle;
+        lastAngle = currentAngle;
         int newLFTarget;
         int newRFTarget;
         int newLBTarget;
@@ -264,8 +266,13 @@ public class Combinetime extends LinearOpMode {
             runtime.reset();
 
             while (opModeIsActive() && runtime.seconds() < timeoutS && (LF.isBusy() && RF.isBusy() && LB.isBusy() && RB.isBusy())) {
-
-
+                double 错误 = 0-currentAngle;
+                if (错误>0) {
+                    RF.setPower(错误);
+                    RB.setPower(错误);
+                    LF.setPower(-错误);
+                    LB.setPower(-错误);
+                }
                 telemetry.addData("LF Current Position", LF.getCurrentPosition());
                 telemetry.addData("RF Current Position", RF.getCurrentPosition());
                 telemetry.addData("LB Current Position", LB.getCurrentPosition());

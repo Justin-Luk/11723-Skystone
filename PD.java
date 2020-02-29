@@ -26,9 +26,11 @@ public class PD extends LinearOpMode {
     BNO055IMU imu;
     private Orientation angles;
 
-    double kP = 0.01;
-    double kD = 0;
+    double kP = 0.005;
+    double kD = 0.01;
+    double kI = 0.00008;
 
+    double totalError = 0;
     double lastAngle = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -98,6 +100,7 @@ public class PD extends LinearOpMode {
             gyroTurn(90);
 
             sleep(1000);
+
 
 
 
@@ -194,9 +197,10 @@ public class PD extends LinearOpMode {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
             double currentAngle = angles.firstAngle;
             double e = (targetAngle - currentAngle);
-            double error = (kP * e)-(kD*(currentAngle-lastAngle));
+            totalError += e;
+            double error = (kP * e)-(kD*(currentAngle-lastAngle))+(kI)*(totalError);
             lastAngle = currentAngle;
-            LF.setPower(-error);
+            LF.setPower(-(error));
             RF.setPower(error);
             LB.setPower(-error);
             RB.setPower(error);
@@ -212,10 +216,14 @@ public class PD extends LinearOpMode {
             telemetry.addData("RBM Current Power", RB.getPower());
 
             telemetry.update();
-            if (Math.abs(targetAngle - currentAngle) < 4) {
+            if (Math.abs(targetAngle-currentAngle) <4) {
                 finished = true;
-
-                sleep(1000);
+                telemetry.addLine("finished");
+                RF.setPower(0);
+                RB.setPower(0);
+                LF.setPower(0);
+                LB.setPower(0);
+                sleep(500);
             }
         }
     }
