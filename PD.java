@@ -96,14 +96,46 @@ public class PD extends LinearOpMode {
             ARM2.setPower(0);*/
 
          //  encoderDrive(.25, 60, 60, false);
-            gyroTurn(90);
+            LF.setPower(.5);
+            LB.setPower(-.5);
+            RF.setPower(-.5);
+            RB.setPower(.5);
+            sleep(200);
+            RF.setPower(-.5);
+            RB.setPower(-.5);
+            LF.setPower(-.5);
+            LB.setPower(-.5);
             sleep(1000);
-            RF.setPower(-.25);
-            RB.setPower(-.25);
-            LF.setPower(-.25);
-            LB.setPower(-.25);
-            sleep(2000);
+
+            RF.setPower(0);
+            RB.setPower(0);
+            LF.setPower(0);
+            LB.setPower(0);
+            sleep(500);
+            ARM2.setPosition(0);
+            sleep(500);
+
+            RF.setPower(.5);
+            RB.setPower(.5);
+            LF.setPower(.5);
+            LB.setPower(.5);
+            sleep(300);
+        //    gyroTurn(90);
+            sleep(1000);
+//            RF.setPower(.25);
+//            RB.setPower(.25);
+//            LF.setPower(.25);
+//            LB.setPower(.25);
+//            sleep(1000);
+            gyroTurn(90);
           //  gyroTurn(180);
+            RF.setPower(-.5);
+            RB.setPower(-.5);
+            LF.setPower(-.5);
+            LB.setPower(-.5);
+            sleep(250);
+
+            stop();
 
 
             //encoderDrive(.15,30,60, false);
