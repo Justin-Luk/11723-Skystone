@@ -134,12 +134,25 @@ public class Combinetime extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            encoderDrive(0.5, -60, 60, false);      //put the foundation in the zone
-            Arm2.setPosition(.8);
-            encoderDrive(0.5, 12, 60, false);
+            //encoderDrive(0.5, -60, 60, false);      //put the foundation in the zone
+//            RF.setPower(-.25);
+//            RB.setPower(-.25);
+//            LF.setPower(-.25);
+//            LB.setPower(-.25);
+//            sleep(2000);
+//
+//            Arm2.setPosition(0);
+//            sleep(1000);
+//
+//            RF.setPower(.25);
+//            RB.setPower(.25);
+//            LF.setPower(.25);
+//            LB.setPower(.25);
+//            sleep(1000);
+            //encoderDrive(0.5, 12, 60, false);
             gyroTurn(90);
-            Arm2.setPosition(0);
-            stop();
+            Arm2.setPosition(.4);
+
 
             targetsSkyStone.activate();     //time to start scanning!
             while (!isStopRequested()) {

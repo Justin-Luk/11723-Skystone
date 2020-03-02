@@ -1,5 +1,4 @@
-import com.qualcomm.hardware.bosch.BNO055IMU;       //imports things that we need
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -8,7 +7,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -74,11 +72,11 @@ public class PD extends LinearOpMode {
         BOOM.setPower(0);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();       //sets up IMU
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "REVHub1IMUCalibration.json";
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
@@ -97,15 +95,19 @@ public class PD extends LinearOpMode {
             sleep(800);
             ARM2.setPower(0);*/
 
+         //  encoderDrive(.25, 60, 60, false);
             gyroTurn(90);
-
             sleep(1000);
-
-
+            RF.setPower(-.25);
+            RB.setPower(-.25);
+            LF.setPower(-.25);
+            LB.setPower(-.25);
+            sleep(2000);
+          //  gyroTurn(180);
 
 
             //encoderDrive(.15,30,60, false);
-            //stop();
+           // stop();
         }
     }
 
@@ -142,7 +144,6 @@ public class PD extends LinearOpMode {
             telemetry.addData("newLBTarget", newLBTarget);
             telemetry.addData("newRBTarget", newRBTarget);
 
-
             LF.setTargetPosition(newLFTarget);
             RF.setTargetPosition(newRFTarget);
             LB.setTargetPosition(newLBTarget);
@@ -160,9 +161,26 @@ public class PD extends LinearOpMode {
 
             runtime.reset();
 
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+            double startAngle = angles.firstAngle;
+
             while (opModeIsActive() && runtime.seconds() < timeoutS && (LF.isBusy() && RF.isBusy() && LB.isBusy() && RB.isBusy())) {
-
-
+                if (!strafe) {
+                    double error = 100 * (startAngle - angles.firstAngle);
+                    telemetry.addData("error", error);
+                    telemetry.update();
+                    if (error > 0) {
+                        LF.setPower(Math.abs(speed) - error);
+                        RF.setPower(Math.abs(speed) + error);
+                        LB.setPower(Math.abs(speed) - error);
+                        RB.setPower(Math.abs(speed) + error);
+                    } else if (error < 0) {
+                        LF.setPower(Math.abs(speed) + error);
+                        RF.setPower(Math.abs(speed) - error);
+                        LB.setPower(Math.abs(speed) + error);
+                        RB.setPower(Math.abs(speed) - error);
+                    }
+                }
                 telemetry.addData("LF Current Position", LF.getCurrentPosition());
                 telemetry.addData("RF Current Position", RF.getCurrentPosition());
                 telemetry.addData("LB Current Position", LB.getCurrentPosition());
@@ -172,9 +190,7 @@ public class PD extends LinearOpMode {
                 telemetry.addData("LB Current Power", LB.getPower());
                 telemetry.addData("RB Current Power", RB.getPower());
                 telemetry.update();
-
             }
-
             LF.setPower(0);
             RF.setPower(0);
             LB.setPower(0);
@@ -198,7 +214,7 @@ public class PD extends LinearOpMode {
             double currentAngle = angles.firstAngle;
             double e = (targetAngle - currentAngle);
             totalError += e;
-            double error = (kP * e)-(kD*(currentAngle-lastAngle))+(kI)*(totalError);
+            double error = (kP * e) - (kD * (currentAngle - lastAngle)) + (kI) * (totalError);
             lastAngle = currentAngle;
             LF.setPower(-(error));
             RF.setPower(error);
@@ -216,7 +232,7 @@ public class PD extends LinearOpMode {
             telemetry.addData("RBM Current Power", RB.getPower());
 
             telemetry.update();
-            if (Math.abs(targetAngle-currentAngle) <4) {
+            if (Math.abs(targetAngle - currentAngle) < 4) {
                 finished = true;
                 telemetry.addLine("finished");
                 RF.setPower(0);
