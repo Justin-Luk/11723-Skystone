@@ -35,10 +35,10 @@ public class testst extends OpMode {
      //   CapServo = hardwareMap.servo.get("Cap");
         FI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Cranemotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         RB.setDirection(DcMotor.Direction.REVERSE); //sets both left side motors on reverse
@@ -88,7 +88,7 @@ public class testst extends OpMode {
         if (Math.abs(px) < 0.05) px = 0;
         double py = -gamepad1.left_stick_y;
         if (Math.abs(py) < 0.05) py = 0;
-        double pa = -(gamepad1.right_stick_x*(.50));
+        double pa = -(gamepad1.right_stick_x*(.70));
         if (Math.abs(pa) < 0.05) pa = 0;
         double plf = -px + py - pa;
         double plb = px + py + -pa;
@@ -119,23 +119,9 @@ public class testst extends OpMode {
             Arm2.setPosition(0);
         }
         if (gamepad2.dpad_left){
-            Arm2.setPosition(1);
+            Arm2.setPosition(.4);
         }
         Crane1.setPower(gamepad2.left_stick_y);
-
-        Cranemotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Cranemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (gamepad2.x) {
-            Cranemotor.setTargetPosition(pulse);
-        }
-        if (gamepad2.y) {
-            Cranemotor.setTargetPosition(-1*pulse);
-        }
-        if (gamepad2.right_stick_button) {
-            Cranemotor.setPower(0);
-        }
-       
-//        if (gamepad2.y) {
 //            Cranemotor.setPower(0);
 //        }
 
@@ -149,9 +135,9 @@ public class testst extends OpMode {
 //        }
 
         while (gamepad1.right_trigger > 0)    {
-            LF.setPower(.9);
-            LB.setPower(-.9);
-            RF.setPower(-.9);
+            LF.setPower(1);
+            LB.setPower(-1);
+            RF.setPower(-1);
             RB.setPower(1);
         }
 
@@ -159,7 +145,7 @@ public class testst extends OpMode {
             LF.setPower(-1);
             LB.setPower(1);
             RF.setPower(1);
-            RB.setPower(-.9);
+            RB.setPower(-1);
         }
 
         while (gamepad1.right_bumper)    {
@@ -230,6 +216,7 @@ public class testst extends OpMode {
             }
             FI.setPower(0);
         }
+       FI.setPower(gamepad2.right_stick_x);
 
         if (gamepad2.x) {
 
