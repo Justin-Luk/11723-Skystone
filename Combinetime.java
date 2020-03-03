@@ -26,7 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 
-@Autonomous
+@Autonomous (name = "TheActualAuto?")
 public class Combinetime extends LinearOpMode {
 
     DcMotor LF, RF, LB, RB, FI, CraneMotor; // Defines names of hardware
@@ -50,6 +50,9 @@ public class Combinetime extends LinearOpMode {
     double driveGearReduction = 0.5;
     double wheelDiameterInches = 3.93701;
     double ticksPerInch = (ticksPerMotorRev * driveGearReduction) / (wheelDiameterInches * 3.14159265359);
+
+    double stop = 0;
+
 
     private static final String VUFORIA_KEY =
             "AXxGX4//////AAABmaGzhDtLe0vztwUuFzptF78cmvdtkCQa4TLJaygK9Mued0mzNi3KaHkbVeeN1llvJDgiTItqnqEHP1SosYrZk3gZ948OKIw39IGN9dy+MV2AbXcAZEgkl26O6oK+Fr5728OXW75g04pt4+DRuf4GiUQgr6gBjJg0nbRV/7VzlYLwXHKrOK5SJ9rLugJ/rwsw1aVfJAwamNf4YNIaSh3SQgw0dL+nALMxEOC9Hb8aPSijZkW66JMgOz9bYJXZlJUGtRTodc8xes544zLyRNQx5j5aa0onYRADaqtcoNF2bw7PtgZCt0uDHJa+J1+5RZF0IS4X+Otj5VyxOC2z9kAMtbeLG90n71dYmRGgbAAk1DhO";
@@ -109,8 +112,8 @@ public class Combinetime extends LinearOpMode {
         FI.setPower(0);
         CraneMotor.setPower(0);
 
-        double drivePower = .4;
-        double turnPower = .2;
+       // double drivePower = .4;
+       // double turnPower = .2;
 
         Crane1.setPower(0);
 
@@ -134,24 +137,72 @@ public class Combinetime extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //encoderDrive(0.5, -60, 60, false);      //put the foundation in the zone
-//            RF.setPower(-.25);
-//            RB.setPower(-.25);
-//            LF.setPower(-.25);
-//            LB.setPower(-.25);
-//            sleep(2000);
-//
-//            Arm2.setPosition(0);
-//            sleep(1000);
-//
+            LF.setPower(.5);
+            LB.setPower(-.5);
+            RF.setPower(-.5);
+            RB.setPower(.5);
+            sleep(200);
+            RF.setPower(-.5);
+            RB.setPower(-.5);
+            LF.setPower(-.5);
+            LB.setPower(-.5);
+            sleep(1000);
+
+            RF.setPower(0);
+            RB.setPower(0);
+            LF.setPower(0);
+            LB.setPower(0);
+            sleep(500);
+            Arm2.setPosition(0);
+            sleep(500);
+
+            RF.setPower(.5);
+            RB.setPower(.5);
+            LF.setPower(.5);
+            LB.setPower(.5);
+            sleep(300);
+            //    gyroTurn(90);
+            sleep(1000);
 //            RF.setPower(.25);
 //            RB.setPower(.25);
 //            LF.setPower(.25);
 //            LB.setPower(.25);
 //            sleep(1000);
-            //encoderDrive(0.5, 12, 60, false);
             gyroTurn(90);
+            //  gyroTurn(180);
+            RF.setPower(-.5);
+            RB.setPower(-.5);
+            LF.setPower(-.5);
+            LB.setPower(-.5);
+            sleep(250);
+
             Arm2.setPosition(.4);
+
+            LF.setPower(.5);
+            LB.setPower(-.5);
+            RF.setPower(-.5);
+            RB.setPower(.5);
+            sleep(300);
+
+            LF.setPower(-.5);
+            LB.setPower(-.5);
+            RF.setPower(.5);
+            RB.setPower(.5);
+            sleep(100);
+
+            telemetry.addLine("done with foundation");
+            RF.setPower(.5);
+            RB.setPower(.5);
+            LF.setPower(.5);
+            LB.setPower(.5);
+            sleep(750);
+
+            telemetry.addLine("done with park");
+            LF.setPower(.8);
+            LB.setPower(.8);
+            RF.setPower(.8);
+            RB.setPower(.8);
+            sleep(300);
 
 
             targetsSkyStone.activate();     //time to start scanning!
@@ -198,6 +249,15 @@ public class Combinetime extends LinearOpMode {
 
                     encoderDrive(.5, 8, 60, true);
 
+                    RF.setPower(stop);
+                    RB.setPower(stop);
+                    LF.setPower(stop);
+                    LB.setPower(stop);
+                    sleep(300);
+
+                    telemetry.update();
+                    timer.reset();
+
                 }
                 telemetry.update();
                 timer.reset();
@@ -205,6 +265,17 @@ public class Combinetime extends LinearOpMode {
                 if (Where == 1) {
                     telemetry.addLine("Position 1");
                     telemetry.update();
+                    encoderDrive(.8, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.5, 18, 60, true);
+                    encoderDrive(.3, 32, 60, false );
+                    encoderDrive(.3, -48, 60, false);
+                    gyroTurn(-90);
+                    encoderDrive(.5, 18, 60, true);
+                    encoderDrive(.8, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.3, 32, 60, false );
+                    encoderDrive(.3, -24, 60, false);
 
                 }
                 if (Where == 2) {

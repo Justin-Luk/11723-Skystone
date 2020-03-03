@@ -135,6 +135,36 @@ public class PD extends LinearOpMode {
             LB.setPower(-.5);
             sleep(250);
 
+            ARM2.setPosition(.4);
+
+            LF.setPower(.5);
+            LB.setPower(-.5);
+            RF.setPower(-.5);
+            RB.setPower(.5);
+            sleep(300);
+
+            LF.setPower(-.5);
+            LB.setPower(-.5);
+            RF.setPower(.5);
+            RB.setPower(.5);
+            sleep(100);
+
+            telemetry.addLine("done with foundation");
+            RF.setPower(.5);
+            RB.setPower(.5);
+            LF.setPower(.5);
+            LB.setPower(.5);
+            sleep(750);
+
+            telemetry.addLine("done with park");
+            LF.setPower(.8);
+            LB.setPower(.8);
+            RF.setPower(.8);
+            RB.setPower(.8);
+            sleep(300);
+
+
+
             stop();
 
 
