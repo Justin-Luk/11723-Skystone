@@ -169,6 +169,7 @@ public class Combinetime extends LinearOpMode {
 //            LB.setPower(.25);
 //            sleep(1000);
             gyroTurn(90);
+            sleep(100);
             //  gyroTurn(180);
             RF.setPower(-.5);
             RB.setPower(-.5);
@@ -412,7 +413,10 @@ public class Combinetime extends LinearOpMode {
             telemetry.update();
             if (Math.abs(targetAngle - currentAngle) < 4) {
                 finished = true;
-
+                LF.setPower(0);
+                RF.setPower(0);
+                RB.setPower(0);
+                LB.setPower(0);
                 sleep(1000);
             }
         }
