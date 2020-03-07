@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class testst extends OpMode {
     private DcMotor RF,RB,LF,LB,FI,Cranemotor;
     private CRServo Crane1 = null;
-    private Servo Arm2;
+    private Servo Arm2, Stone;
     double motorpowerleft =Math.pow(gamepad1.left_stick_y, 2);
     double motorpowerright =Math.pow(gamepad1.right_stick_y,2);
     private ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -33,6 +33,7 @@ public class testst extends OpMode {
         Cranemotor = hardwareMap.dcMotor.get("LIFT");
         Arm2 = hardwareMap.servo.get("ARM2");
         Crane1  = hardwareMap.crservo.get("BOOM");
+        Stone = hardwareMap.servo.get("Stone");
      //   CapServo = hardwareMap.servo.get("Cap");
         FI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Cranemotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -130,7 +131,7 @@ public class testst extends OpMode {
             if (gamepad2.dpad_left){
                 Arm2.setPosition(.4);
             }
-            Crane1.setPower(gamepad2.left_stick_y);
+            Crane1.setPower(-gamepad2.left_stick_y);
 //            Cranemotor.setPower(0);
 //        }
 
@@ -142,6 +143,19 @@ public class testst extends OpMode {
 //        if (gamepad2.left_bumper) {
 //            CapServo.setPosition(.8);
 //        }
+
+            if(gamepad1.x) {
+                Stone.setPosition(.2);
+            }
+            if (gamepad1.y) {
+                Stone.setPosition(1);
+            }
+            if(gamepad2.x) {
+                Stone.setPosition(.2);
+            }
+            if (gamepad2.y) {
+                Stone.setPosition(1);
+            }
 
             while (gamepad1.right_trigger > 0)    {
                 LF.setPower(1);
@@ -171,31 +185,21 @@ public class testst extends OpMode {
                 RB.setPower(-0.5);
             }
 
-            if (gamepad1.x)       {
-                LF.setPower(1);
-                LB.setPower(1);
-                RF.setPower(1);
-                RB.setPower(1);
-            }
 
 
-            if (gamepad1.y) {
-
-                LF.setPower(1);
-                LB.setPower(1);
-                RF.setPower(1);
-                RB.setPower(1);
-                ElapsedTime elapsedTime = new ElapsedTime();
-                FI.setPower(-.5);
-                elapsedTime.reset();
-
-                while (elapsedTime.seconds() < 1){
-
-                }
-            }
             if (gamepad2.b) {
                 ElapsedTime elapsedTime = new ElapsedTime();
                 FI.setPower(.5);
+                elapsedTime.reset();
+
+                while (elapsedTime.seconds() < 2){
+
+                }
+                FI.setPower(0);
+            }
+            if  (gamepad2.a) {
+                ElapsedTime elapsedTime = new ElapsedTime();
+                FI.setPower(-.5);
                 elapsedTime.reset();
 
                 while (elapsedTime.seconds() < 2){
@@ -215,36 +219,17 @@ public class testst extends OpMode {
                 Cranemotor.setPower(0);
             }
 
-            Cranemotor.setPower(gamepad2.right_trigger);
-            Cranemotor.setPower(-gamepad2.left_trigger);
+//            Cranemotor.setPower(gamepad2.right_trigger);
+//            Cranemotor.setPower(-gamepad2.left_trigger);
 
-            if (gamepad2.a) {
-                ElapsedTime elapsedTime = new ElapsedTime();
-                FI.setPower(-.5);
-                elapsedTime.reset();
 
-                while (elapsedTime.seconds() < 2){
-
-                }
                 FI.setPower(0);
             }
-            FI.setPower(gamepad2.right_stick_x);
+            FI.setPower(gamepad2.right_stick_y);
 
-            if (gamepad2.x) {
 
-                {
-                    ElapsedTime elapsedTime = new ElapsedTime();
-                    Crane1.setPower(-1);
-                    FI.setPower(-.5);
-                    elapsedTime.reset();
-
-                    while (elapsedTime.seconds() < 2) {
-
-                    }
-                }
-            }
         }
 
 
 
-    }}
+    }
