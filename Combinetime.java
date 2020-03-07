@@ -24,15 +24,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import java.util.Timer;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 
 @Autonomous (name = "TheActualAuto?")
 public class Combinetime extends LinearOpMode {
 
     DcMotor LF, RF, LB, RB, FI, CraneMotor; // Defines names of hardware
-    CRServo Crane1;
-    Servo Arm2;
-
+    CRServo BOOM;
+    Servo Arm2, Stone;
+    int MAX_TRIES;
     int Where =0;
     BNO055IMU imu;
     private Orientation angles;
@@ -47,7 +49,7 @@ public class Combinetime extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     double ticksPerMotorRev = 383.6;        //sets values we will need later
-    double driveGearReduction = 0.5;
+    double driveGearReduction = 1;
     double wheelDiameterInches = 3.93701;
     double ticksPerInch = (ticksPerMotorRev * driveGearReduction) / (wheelDiameterInches * 3.14159265359);
 
@@ -74,8 +76,12 @@ public class Combinetime extends LinearOpMode {
         FI = hardwareMap.dcMotor.get("FI");
         CraneMotor = hardwareMap.dcMotor.get("LIFT");
 
+        telemetry.addData("timer", time);
         Arm2 = hardwareMap.servo.get("ARM2");
-        Crane1 = hardwareMap.crservo.get("BOOM");
+        Stone = hardwareMap.servo.get("Stone");
+        BOOM = hardwareMap.crservo.get("BOOM");
+
+        Stone.setPosition(1);
 
         Camera cam = Camera.open();
         Camera.Parameters p = cam.getParameters();
@@ -112,10 +118,10 @@ public class Combinetime extends LinearOpMode {
         FI.setPower(0);
         CraneMotor.setPower(0);
 
-       // double drivePower = .4;
-       // double turnPower = .2;
+        // double drivePower = .4;
+        // double turnPower = .2;
 
-        Crane1.setPower(0);
+        BOOM.setPower(0);
 
         BNO055IMU.Parameters parameters1 = new BNO055IMU.Parameters();       //sets up IMU
         parameters1.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -129,6 +135,9 @@ public class Combinetime extends LinearOpMode {
 
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        Arm2.setPosition(.6);
+        MAX_TRIES=0;
+
         telemetry.addLine("ready to go!");
         telemetry.update();
 
@@ -136,74 +145,31 @@ public class Combinetime extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
-            LF.setPower(.5);
-            LB.setPower(-.5);
-            RF.setPower(-.5);
-            RB.setPower(.5);
-            sleep(200);
-            RF.setPower(-.5);
-            RB.setPower(-.5);
-            LF.setPower(-.5);
-            LB.setPower(-.5);
-            sleep(1000);
-
-            RF.setPower(0);
-            RB.setPower(0);
-            LF.setPower(0);
-            LB.setPower(0);
-            sleep(500);
+            encoderDrive(.4, -10, 31, false);
+            encoderDrive(.5, 10, 31, true);
+            encoderDrive(.4, -18, 31, false);
             Arm2.setPosition(0);
-            sleep(500);
-
-            RF.setPower(.5);
-            RB.setPower(.5);
-            LF.setPower(.5);
-            LB.setPower(.5);
-            sleep(300);
-            //    gyroTurn(90);
-            sleep(1000);
-//            RF.setPower(.25);
-//            RB.setPower(.25);
-//            LF.setPower(.25);
-//            LB.setPower(.25);
-//            sleep(1000);
-            gyroTurn(90);
-            sleep(100);
-            //  gyroTurn(180);
-            RF.setPower(-.5);
-            RB.setPower(-.5);
-            LF.setPower(-.5);
-            LB.setPower(-.5);
             sleep(250);
+            encoderDrive(.4,32.5,31, false);
+            //encoderDrive(.2,-3,31, false);
+            Arm2.setPosition(.6);
+            gyroTurn(-85);
+            encoderDrive(.6, -69, 31, false);
+            gyroTurn(-168);
+            /*RF.setPower(-.3);
+            RB.setPower(-.3);
+            LF.setPower(.3);
+            LB.setPower(.3);
+            sleep(100);*/
+            //encoderDrive(.5, 4, 31, false);
+            sleep(50);
+            encoderDrive(.3, 13, 31, false);
+            CraneMotor.setPower(1);
+            sleep(500);
+            CraneMotor.setPower(0);
+            // encoderDrive(.5, 3, 31, true);
 
-            Arm2.setPosition(.4);
 
-            LF.setPower(.5);
-            LB.setPower(-.5);
-            RF.setPower(-.5);
-            RB.setPower(.5);
-            sleep(300);
-
-            LF.setPower(-.5);
-            LB.setPower(-.5);
-            RF.setPower(.5);
-            RB.setPower(.5);
-            sleep(100);
-
-            telemetry.addLine("done with foundation");
-            RF.setPower(.5);
-            RB.setPower(.5);
-            LF.setPower(.5);
-            LB.setPower(.5);
-            sleep(750);
-
-            telemetry.addLine("done with park");
-            LF.setPower(.8);
-            LB.setPower(.8);
-            RF.setPower(.8);
-            RB.setPower(.8);
-            sleep(300);
 
 
             targetsSkyStone.activate();     //time to start scanning!
@@ -248,13 +214,75 @@ public class Combinetime extends LinearOpMode {
                     telemetry.addData("Visible Target", "none");
                     Where = 3; //if stone isn't found
 
-                    encoderDrive(.5, 8, 60, true);
+                    encoderDrive(1, 4.05, 60, true);
 
                     RF.setPower(stop);
                     RB.setPower(stop);
                     LF.setPower(stop);
                     LB.setPower(stop);
                     sleep(300);
+                    MAX_TRIES ++;
+                    if (MAX_TRIES > 8) {
+                        encoderDrive(1,4, 60, false);
+                        encoderDrive(.4, 14, 60, false);
+                        Stone.setPosition(.2);
+                        CraneMotor.setPower(-1);
+                        sleep(400);
+                        CraneMotor.setPower(0);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    FI.setPower(-1);
+                    sleep(300);*/
+                      RF.setPower(.5);
+                      RB.setPower(.5);
+                      LF.setPower(-.5);
+                      LB.setPower(-.5);
+                      sleep(250);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    BOOM.setPower(0);*/
+                        gyroTurn(90);
+                        encoderDrive(.5, -16, 60, true);
+                        encoderDrive(.3, 45, 60, false );
+                        Stone.setPosition(1);
+                        encoderDrive(.3, -10, 60, false);
+                        stop();
+                    }
+
+                    if (25 == time) {
+                        encoderDrive(1,4, 60, false);
+                        encoderDrive(.4, 14, 60, false);
+                        Stone.setPosition(.2);
+                        CraneMotor.setPower(-1);
+                        sleep(400);
+                        CraneMotor.setPower(0);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    FI.setPower(-1);
+                    sleep(300);*/
+
+                        BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
+                        parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+                        parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+                        parameters2.calibrationDataFile = "REVHub1IMUCalibration.json";
+                        parameters2.loggingEnabled      = true;
+                        parameters2.loggingTag          = "IMU";
+
+                        imu = hardwareMap.get(BNO055IMU.class, "imu");
+                        imu.initialize(parameters2);
+
+                        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+                        sleep(700);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    BOOM.setPower(0);*/
+                        gyroTurn(90);
+                        encoderDrive(.5, -16, 60, true);
+                        encoderDrive(.3, 45, 60, false );
+                        Stone.setPosition(1);
+                        encoderDrive(.3, -10, 60, false);
+                        stop();
+                    }
 
                     telemetry.update();
                     timer.reset();
@@ -266,31 +294,160 @@ public class Combinetime extends LinearOpMode {
                 if (Where == 1) {
                     telemetry.addLine("Position 1");
                     telemetry.update();
-                    encoderDrive(.8, 16, 60, false);
+//                    BOOM.setPower(1);
+//                    sleep(500);
+//                    BOOM.setPower(0);
+                    //encoderDrive(.5, -8, 31, true);
+
+                    /*BOOM.setPower(1);
+                    sleep(500);*/
+                    encoderDrive(1,4, 60, false);
+                    encoderDrive(.4, 14, 60, false);
+                    Stone.setPosition(.2);
+                    CraneMotor.setPower(-1);
+                    sleep(400);
+                    CraneMotor.setPower(0);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    FI.setPower(-1);
+                    sleep(300);*/
+
+                    BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
+                    parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+                    parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+                    parameters2.calibrationDataFile = "REVHub1IMUCalibration.json";
+                    parameters2.loggingEnabled      = true;
+                    parameters2.loggingTag          = "IMU";
+
+                    imu = hardwareMap.get(BNO055IMU.class, "imu");
+                    imu.initialize(parameters2);
+
+                    imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+                    sleep(700);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    BOOM.setPower(0);*/
                     gyroTurn(90);
-                    encoderDrive(.5, 18, 60, true);
-                    encoderDrive(.3, 32, 60, false );
-                    encoderDrive(.3, -48, 60, false);
+                    encoderDrive(.5, -16, 60, true);
+                    encoderDrive(.3, 45, 60, false );
+                    Stone.setPosition(1);
+                    encoderDrive(.3, -10, 60, false);
+                    stop();
+                    /*encoderDrive(.3, -48, 60, false);
                     gyroTurn(-90);
-                    encoderDrive(.5, 18, 60, true);
                     encoderDrive(.8, 16, 60, false);
                     gyroTurn(90);
-                    encoderDrive(.3, 32, 60, false );
-                    encoderDrive(.3, -24, 60, false);
+                    encoderDrive(.5, -18, 60, true);
+                    encoderDrive(.2, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.2, 32, 60, false );
+                    encoderDrive(.2, -24, 60, false);*/
 
                 }
                 if (Where == 2) {
                     telemetry.addLine("Position 2");
                     telemetry.update();
+//                    BOOM.setPower(1);
+//                    sleep(500);
+//                    BOOM.setPower(0);
+                    //encoderDrive(.5, -8, 31, true);
+                    /*BOOM.setPower(1);
+                    sleep(500);*/
+                    encoderDrive(1,4, 60, false);
+                    encoderDrive(.4, 14, 60, false);
+                    Stone.setPosition(.2);
+                    CraneMotor.setPower(-1);
+                    sleep(400);
+                    CraneMotor.setPower(0);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    FI.setPower(-1);
+                    sleep(300);*/
 
+                    BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
+                    parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+                    parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+                    parameters2.calibrationDataFile = "REVHub1IMUCalibration.json";
+                    parameters2.loggingEnabled      = true;
+                    parameters2.loggingTag          = "IMU";
 
+                    imu = hardwareMap.get(BNO055IMU.class, "imu");
+                    imu.initialize(parameters2);
 
+                    imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+                    sleep(700);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    BOOM.setPower(0);*/
 
+                    gyroTurn(90);
+                    encoderDrive(.5, -16, 60, true);
+                    encoderDrive(.3, 45, 60, false );
+                    Stone.setPosition(1);
+                    encoderDrive(.3, -10, 60, false);
+                    stop();
+                    /*encoderDrive(.3, -48, 60, false);
+                    gyroTurn(-90);
+                    encoderDrive(.8, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.5, -18, 60, true);
+                    encoderDrive(.2, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.2, 32, 60, false );
+                    encoderDrive(.2, -24, 60, false);*/
                 }
                 if (Where == 4) {
                     telemetry.addLine("Position 3");
                     telemetry.update();
+//                    BOOM.setPower(1);
+//                    sleep(500);
+//                    BOOM.setPower(0);
+                    //encoderDrive(.5, -8, 31, true);
 
+                    /*BOOM.setPower(1);
+                    sleep(500);*/
+                    encoderDrive(1,4, 60, false);
+                    encoderDrive(.4, 14, 60, false);
+                    Stone.setPosition(.2);
+                    CraneMotor.setPower(-1);
+                    sleep(400);
+                    CraneMotor.setPower(0);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    FI.setPower(-1);
+                    sleep(300);*/
+                    BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
+                    parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+                    parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+                    parameters2.calibrationDataFile = "REVHub1IMUCalibration.json";
+                    parameters2.loggingEnabled      = true;
+                    parameters2.loggingTag          = "IMU";
+
+                    imu = hardwareMap.get(BNO055IMU.class, "imu");
+                    imu.initialize(parameters2);
+
+                    imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+                    sleep(700);
+                    /*BOOM.setPower(-1);
+                    sleep(500);
+                    BOOM.setPower(0);*/
+
+                    gyroTurn(90);
+                    encoderDrive(.5, -16, 60, true);
+                    encoderDrive(.3, 45, 60, false );
+                    Stone.setPosition(1);
+                    encoderDrive(.3, -10, 60, false);
+                    stop();
+
+                    /*encoderDrive(.3, -48, 60, false);
+                    gyroTurn(-90);
+                    encoderDrive(.8, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.5, -18, 60, true);
+                    encoderDrive(.2, 16, 60, false);
+                    gyroTurn(90);
+                    encoderDrive(.2, 32, 60, false );
+                    encoderDrive(.2, -24, 60, false);*/
                 }
             }
 
@@ -301,8 +458,6 @@ public class Combinetime extends LinearOpMode {
 
         telemetry.addLine("Encoder Drive");
 
-        double currentAngle = angles.firstAngle;
-        lastAngle = currentAngle;
         int newLFTarget;
         int newRFTarget;
         int newLBTarget;
@@ -311,6 +466,8 @@ public class Combinetime extends LinearOpMode {
         int rFPos = RF.getCurrentPosition();
         int lBPos = LB.getCurrentPosition();
         int rBPos = RB.getCurrentPosition();
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+        double startAngle = angles.firstAngle;
 
         if (opModeIsActive()) {
             if (strafe) {
@@ -332,7 +489,6 @@ public class Combinetime extends LinearOpMode {
             telemetry.addData("newLBTarget", newLBTarget);
             telemetry.addData("newRBTarget", newRBTarget);
 
-
             LF.setTargetPosition(newLFTarget);
             RF.setTargetPosition(newRFTarget);
             LB.setTargetPosition(newLBTarget);
@@ -349,14 +505,25 @@ public class Combinetime extends LinearOpMode {
             RB.setPower(Math.abs(speed));
 
             runtime.reset();
-
             while (opModeIsActive() && runtime.seconds() < timeoutS && (LF.isBusy() && RF.isBusy() && LB.isBusy() && RB.isBusy())) {
-                double 错误 = 0-currentAngle;
-                if (错误>0) {
-                    RF.setPower(错误);
-                    RB.setPower(错误);
-                    LF.setPower(-错误);
-                    LB.setPower(-错误);
+                if (!strafe) {
+                    double error = kP * (startAngle - angles.firstAngle);
+                    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+                    telemetry.addData("Start Angle", startAngle);
+                    telemetry.addData("Current Angle", angles.firstAngle);
+                    telemetry.addData("error", error);
+                    telemetry.update();
+                    if (error > 0) {
+                        LF.setPower(Math.abs(speed) - error);
+                        RF.setPower(Math.abs(speed) + error);
+                        LB.setPower(Math.abs(speed) - error);
+                        RB.setPower(Math.abs(speed) + error);
+                    } else if (error < 0) {
+                        LF.setPower(Math.abs(speed) + error);
+                        RF.setPower(Math.abs(speed) - error);
+                        LB.setPower(Math.abs(speed) + error);
+                        RB.setPower(Math.abs(speed) - error);
+                    }
                 }
                 telemetry.addData("LF Current Position", LF.getCurrentPosition());
                 telemetry.addData("RF Current Position", RF.getCurrentPosition());
@@ -367,9 +534,7 @@ public class Combinetime extends LinearOpMode {
                 telemetry.addData("LB Current Power", LB.getPower());
                 telemetry.addData("RB Current Power", RB.getPower());
                 telemetry.update();
-
             }
-
             LF.setPower(0);
             RF.setPower(0);
             LB.setPower(0);
@@ -385,25 +550,27 @@ public class Combinetime extends LinearOpMode {
     }
 
     private void gyroTurn(double targetAngle) {
-        //+ counter-clockwise
-        //- clockwise
+        //+ is counter-clockwise
+        //- is clockwise
         boolean finished = false;
         while (!finished) {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
             double currentAngle = angles.firstAngle;
             double e = (targetAngle - currentAngle);
-            totalError+=e;
-            double error = (kP * e)-(kD*(currentAngle-lastAngle))+(kI)*(totalError);
+            totalError += e;
+            double error = (kP * e) - (kD * (currentAngle - lastAngle)) + (kI) * (totalError);
             lastAngle = currentAngle;
-            LF.setPower((Math.log(error+.1)));
-            RF.setPower(-Math.log(error+.1));
-            LB.setPower(Math.log(error+.1));
-            RB.setPower(-Math.log(error+.1));
+            LF.setPower(-error);
+            RF.setPower(error);
+            LB.setPower(-error);
+            RB.setPower(error);
             telemetry.addData("targetAngle", targetAngle);
             telemetry.addData("currentAngle", currentAngle);
             telemetry.addData("error", error);
             telemetry.addData("targetAngle - currentAngle", targetAngle - currentAngle);
             telemetry.addData("finished", finished);
+
+
 
             telemetry.addData("LFM Current Power", LF.getPower());
             telemetry.addData("RFM Current Power", RF.getPower());
@@ -413,11 +580,12 @@ public class Combinetime extends LinearOpMode {
             telemetry.update();
             if (Math.abs(targetAngle - currentAngle) < 4) {
                 finished = true;
-                LF.setPower(0);
+                telemetry.addData("Finished", finished);
                 RF.setPower(0);
                 RB.setPower(0);
+                LF.setPower(0);
                 LB.setPower(0);
-                sleep(1000);
+                sleep(500);
             }
         }
     }
