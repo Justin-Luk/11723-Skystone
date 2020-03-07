@@ -222,25 +222,18 @@ public class Combinetime extends LinearOpMode {
                     LB.setPower(stop);
                     sleep(300);
                     MAX_TRIES ++;
-                    if (MAX_TRIES > 8) {
+                    if (MAX_TRIES > 6) {
                         encoderDrive(1,4, 60, false);
                         encoderDrive(.4, 14, 60, false);
                         Stone.setPosition(.2);
                         CraneMotor.setPower(-1);
                         sleep(400);
                         CraneMotor.setPower(0);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    FI.setPower(-1);
-                    sleep(300);*/
                       RF.setPower(.5);
                       RB.setPower(.5);
                       LF.setPower(-.5);
                       LB.setPower(-.5);
                       sleep(250);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    BOOM.setPower(0);*/
                         gyroTurn(90);
                         encoderDrive(.5, -16, 60, true);
                         encoderDrive(.3, 45, 60, false );
@@ -256,11 +249,6 @@ public class Combinetime extends LinearOpMode {
                         CraneMotor.setPower(-1);
                         sleep(400);
                         CraneMotor.setPower(0);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    FI.setPower(-1);
-                    sleep(300);*/
-
                         BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
                         parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
                         parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -273,9 +261,6 @@ public class Combinetime extends LinearOpMode {
 
                         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
                         sleep(700);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    BOOM.setPower(0);*/
                         gyroTurn(90);
                         encoderDrive(.5, -16, 60, true);
                         encoderDrive(.3, 45, 60, false );
@@ -294,23 +279,12 @@ public class Combinetime extends LinearOpMode {
                 if (Where == 1) {
                     telemetry.addLine("Position 1");
                     telemetry.update();
-//                    BOOM.setPower(1);
-//                    sleep(500);
-//                    BOOM.setPower(0);
-                    //encoderDrive(.5, -8, 31, true);
-
-                    /*BOOM.setPower(1);
-                    sleep(500);*/
                     encoderDrive(1,4, 60, false);
                     encoderDrive(.4, 14, 60, false);
                     Stone.setPosition(.2);
                     CraneMotor.setPower(-1);
                     sleep(400);
                     CraneMotor.setPower(0);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    FI.setPower(-1);
-                    sleep(300);*/
 
                     BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
                     parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -324,46 +298,22 @@ public class Combinetime extends LinearOpMode {
 
                     imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
                     sleep(700);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    BOOM.setPower(0);*/
                     gyroTurn(90);
                     encoderDrive(.5, -16, 60, true);
                     encoderDrive(.3, 45, 60, false );
                     Stone.setPosition(1);
                     encoderDrive(.3, -10, 60, false);
                     stop();
-                    /*encoderDrive(.3, -48, 60, false);
-                    gyroTurn(-90);
-                    encoderDrive(.8, 16, 60, false);
-                    gyroTurn(90);
-                    encoderDrive(.5, -18, 60, true);
-                    encoderDrive(.2, 16, 60, false);
-                    gyroTurn(90);
-                    encoderDrive(.2, 32, 60, false );
-                    encoderDrive(.2, -24, 60, false);*/
-
                 }
                 if (Where == 2) {
                     telemetry.addLine("Position 2");
                     telemetry.update();
-//                    BOOM.setPower(1);
-//                    sleep(500);
-//                    BOOM.setPower(0);
-                    //encoderDrive(.5, -8, 31, true);
-                    /*BOOM.setPower(1);
-                    sleep(500);*/
                     encoderDrive(1,4, 60, false);
                     encoderDrive(.4, 14, 60, false);
                     Stone.setPosition(.2);
                     CraneMotor.setPower(-1);
                     sleep(400);
                     CraneMotor.setPower(0);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    FI.setPower(-1);
-                    sleep(300);*/
-
                     BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
                     parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
                     parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -376,46 +326,22 @@ public class Combinetime extends LinearOpMode {
 
                     imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
                     sleep(700);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    BOOM.setPower(0);*/
-
                     gyroTurn(90);
                     encoderDrive(.5, -16, 60, true);
                     encoderDrive(.3, 45, 60, false );
                     Stone.setPosition(1);
                     encoderDrive(.3, -10, 60, false);
                     stop();
-                    /*encoderDrive(.3, -48, 60, false);
-                    gyroTurn(-90);
-                    encoderDrive(.8, 16, 60, false);
-                    gyroTurn(90);
-                    encoderDrive(.5, -18, 60, true);
-                    encoderDrive(.2, 16, 60, false);
-                    gyroTurn(90);
-                    encoderDrive(.2, 32, 60, false );
-                    encoderDrive(.2, -24, 60, false);*/
                 }
                 if (Where == 4) {
                     telemetry.addLine("Position 3");
                     telemetry.update();
-//                    BOOM.setPower(1);
-//                    sleep(500);
-//                    BOOM.setPower(0);
-                    //encoderDrive(.5, -8, 31, true);
-
-                    /*BOOM.setPower(1);
-                    sleep(500);*/
                     encoderDrive(1,4, 60, false);
                     encoderDrive(.4, 14, 60, false);
                     Stone.setPosition(.2);
                     CraneMotor.setPower(-1);
                     sleep(400);
                     CraneMotor.setPower(0);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    FI.setPower(-1);
-                    sleep(300);*/
                     BNO055IMU.Parameters parameters2 = new BNO055IMU.Parameters();       //sets up IMU
                     parameters2.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
                     parameters2.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -428,9 +354,6 @@ public class Combinetime extends LinearOpMode {
 
                     imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
                     sleep(700);
-                    /*BOOM.setPower(-1);
-                    sleep(500);
-                    BOOM.setPower(0);*/
 
                     gyroTurn(90);
                     encoderDrive(.5, -16, 60, true);
@@ -439,15 +362,6 @@ public class Combinetime extends LinearOpMode {
                     encoderDrive(.3, -10, 60, false);
                     stop();
 
-                    /*encoderDrive(.3, -48, 60, false);
-                    gyroTurn(-90);
-                    encoderDrive(.8, 16, 60, false);
-                    gyroTurn(90);
-                    encoderDrive(.5, -18, 60, true);
-                    encoderDrive(.2, 16, 60, false);
-                    gyroTurn(90);
-                    encoderDrive(.2, 32, 60, false );
-                    encoderDrive(.2, -24, 60, false);*/
                 }
             }
 
